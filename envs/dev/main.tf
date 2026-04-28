@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 ###############################################################################
-# VPC 모듈 호출
+# VPC 모듈 호출 — Phase 2.2
 #
 # 향후 EKS를 만들 때 이 모듈의 outputs을 그대로 EKS 모듈로 넘긴다:
 #   module "eks" {
@@ -56,5 +56,41 @@ module "vpc" {
 
   tags = {
     Component = "network"
+  }
+}
+
+###############################################################################
+# EKS 모듈 호출 — Phase 2.3
+#
+# 노드는 Private subnet에, Control Plane ENI도 Private subnet에 배치.
+# Public 서브넷은 ALB와 NAT만.
+###############################################################################
+
+module "eks" {
+  source = "../../modules/eks"
+
+  cluster_name       = "${var.project_name}-${var.environment}"
+  kubernetes_version = var.kubernetes_version
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnet_ids
+
+  # 포트폴리오 환경 — kubectl 편의를 위해 public endpoint 활성화.
+  # 운영 환경에선 endpoint_public_access_cidrs를 회사 IP 화이트리스트로 제한 권장.
+  endpoint_public_access       = true
+  endpoint_public_access_cidrs = ["0.0.0.0/0"]
+
+  # 노드 그룹: t3.large × 2 (HPA로 최대 4까지 확장)
+  node_instance_types = ["t3.large"]
+  node_capacity_type  = "ON_DEMAND"
+  node_min_size       = 2
+  node_max_size       = 4
+  node_desired_size   = 2
+  node_disk_size_gb   = 30
+
+  enable_cluster_creator_admin_permissions = true
+
+  tags = {
+    Component = "compute"
   }
 }

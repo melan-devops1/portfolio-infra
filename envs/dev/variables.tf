@@ -32,3 +32,12 @@ variable "azs" {
   type        = list(string)
   default     = ["ap-northeast-2a", "ap-northeast-2c"]
 }
+
+###############################################################################
+# EKS 관련
+###############################################################################
+variable "kubernetes_version" {
+  description = "EKS Kubernetes 버전"
+  type        = string
+  default     = "1.33"
+}
