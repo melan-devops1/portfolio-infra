@@ -1,13 +1,11 @@
 output "tfstate_bucket_name" {
-  description = "Terraform state S3 버킷 이름. envs/dev/backend.tf에서 사용."
+  description = "Terraform state S3 버킷 이름. envs/*/backend.tf에서 사용."
   value       = aws_s3_bucket.tfstate.id
-}
-
-output "tfstate_lock_table_name" {
-  description = "Terraform state lock DynamoDB 테이블 이름."
-  value       = aws_dynamodb_table.tfstate_lock.name
 }
 
 output "aws_region" {
   value = var.aws_region
 }
+
+# Note: tfstate_lock_table_name은 ADR-0013에서 제거됨.
+#       S3 native locking (use_lockfile)으로 전환되어 DynamoDB 불필요.
