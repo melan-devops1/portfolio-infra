@@ -15,6 +15,7 @@ resource "aws_ecr_repository" "this" {
 
   name                 = each.value
   image_tag_mutability = var.image_tag_mutability
+  force_delete         = var.force_delete # destroy 시 자동으로 이미지 같이 지움
 
   image_scanning_configuration {
     scan_on_push = var.scan_on_push

@@ -115,6 +115,7 @@ module "ecr" {
   scan_on_push         = true
   untagged_days        = 1
   keep_tagged_count    = 10
+  force_delete = true   # ← dev 환경만 true
 
   tags = {
     Component = "registry"

@@ -72,3 +72,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "force_delete" {
+  description = "destroy 시 이미지가 있어도 강제 삭제. 개발/포트폴리오 환경 권장."
+  type        = bool
+  default     = false   # 운영 환경 기본값은 안전하게 false
+}
