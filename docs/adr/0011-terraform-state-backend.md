@@ -1,7 +1,7 @@
 # ADR-0011: Terraform State 백엔드 — S3 (versioning, encryption, public block)
 
 ## Status
-Accepted (2026-04 [검토 필요: 정확한 결정 시점])
+Accepted (2026-04-28)
 **⚠️ Lock 부분은 ADR-0013에 의해 supersede됨**
 
 ## Context
