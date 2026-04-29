@@ -57,3 +57,13 @@ output "configure_kubectl" {
   value       = module.eks.configure_kubectl
 }
 
+# ===== ECR =====
+output "ecr_repository_urls" {
+  description = "ECR 리포지토리 URL 맵 — docker push 대상"
+  value       = module.ecr.repository_urls
+}
+
+output "ecr_registry_id" {
+  description = "ECR 레지스트리 ID (계정 ID와 동일). docker login 시 사용."
+  value       = module.ecr.registry_id
+}

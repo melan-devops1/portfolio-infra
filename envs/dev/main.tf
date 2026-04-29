@@ -94,3 +94,29 @@ module "eks" {
     Component = "compute"
   }
 }
+
+###############################################################################
+# ECR 모듈 호출 — Phase 2.4
+#
+# 3개 마이크로서비스용 리포지토리.
+# 리포 이름은 portfolio/<service> 패턴 — IAM 정책의 portfolio/* 와 정합.
+###############################################################################
+
+module "ecr" {
+  source = "../../modules/ecr"
+
+  repository_names = [
+    "portfolio/product-service",
+    "portfolio/order-service",
+    "portfolio/payment-service",
+  ]
+
+  image_tag_mutability = "IMMUTABLE"
+  scan_on_push         = true
+  untagged_days        = 1
+  keep_tagged_count    = 10
+
+  tags = {
+    Component = "registry"
+  }
+}
