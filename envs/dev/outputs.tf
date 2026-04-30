@@ -7,6 +7,7 @@
 #   terraform output -json | jq '.public_subnet_ids.value'
 ###############################################################################
 
+# ===== VPC =====
 output "vpc_id" {
   value = module.vpc.vpc_id
 }
@@ -66,4 +67,26 @@ output "ecr_repository_urls" {
 output "ecr_registry_id" {
   description = "ECR 레지스트리 ID (계정 ID와 동일). docker login 시 사용."
   value       = module.ecr.registry_id
+}
+
+# ===== ALB Controller =====
+output "alb_controller_iam_role_arn" {
+  description = "ALB Controller IAM Role ARN — Helm 설치 시 ServiceAccount annotation 등에 활용 가능"
+  value       = module.alb_controller_iam.iam_role_arn
+}
+
+output "alb_controller_helm_install_command" {
+  description = "ALB Controller Helm 설치 명령 (복사하여 실행)"
+  value       = <<-EOT
+    helm repo add eks https://aws.github.io/eks-charts
+    helm repo update eks
+    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+      -n ${module.alb_controller_iam.namespace} \
+      --set clusterName=${module.eks.cluster_name} \
+      --set serviceAccount.create=true \
+      --set serviceAccount.name=${module.alb_controller_iam.service_account_name} \
+      --set region=${var.aws_region} \
+      --set vpcId=${module.vpc.vpc_id} \
+      --version 1.14.0
+  EOT
 }

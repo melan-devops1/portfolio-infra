@@ -115,9 +115,28 @@ module "ecr" {
   scan_on_push         = true
   untagged_days        = 1
   keep_tagged_count    = 10
-  force_delete = true   # ← dev 환경만 true
+  force_delete = true   # dev 환경 — destroy 시 이미지 자동 삭제
 
   tags = {
     Component = "registry"
   }
+}
+
+###############################################################################
+# AWS Load Balancer Controller IAM — Phase 3.4.6
+#
+# Pod Identity 기반 (ADR-0015 첫 실전 적용).
+# 실제 Controller 설치는 Helm으로 별도 진행 (ADR-0019).
+###############################################################################
+
+module "alb_controller_iam" {
+  source = "../../modules/alb-controller-iam"
+
+  cluster_name = module.eks.cluster_name
+
+  tags = {
+    Component = "ingress"
+  }
+
+  depends_on = [module.eks]
 }
