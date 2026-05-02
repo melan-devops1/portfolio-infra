@@ -179,7 +179,7 @@ ProductUnavailableException: Product not available: id=1, status=404 NOT_FOUND
       매 destroy 사이클마다 ECR 이미지 재 push 필요.
       PROJECT_CONTEXT.md에 보류 결정 박제됨.
 
-### 면접 답변용 포인트
+### 말로 정리
 
 #### Q. Observability 어떻게 구축했나요?
 

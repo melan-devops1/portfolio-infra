@@ -95,7 +95,7 @@ terraform {
 - bootstrap의 로컬 state 파일은 한 번 만들어지면 보호 필요
   - mitigation: bootstrap 실행 머신에서 `.terraform.tfstate*`를 별도 백업
 
-### 면접 답변용 포인트
+### 말로 정리
 "Terraform state는 S3 백엔드로 관리하면서 버전 관리, 서버측 암호화, public 접근 차단을
 세트로 적용했습니다. S3 버킷 자체를 Terraform으로 만들어야 하는 chicken-and-egg 문제는
 bootstrap 폴더만 로컬 state로 두는 예외 처리로 해결했습니다. 처음엔 DynamoDB lock 테이블도

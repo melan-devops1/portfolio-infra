@@ -82,7 +82,7 @@ ALB → /api/products/* → product-service:8081
 - Controller가 죽으면 새 Ingress 생성 불가 — Phase 4 Prometheus로 알림 추가 필요
 - Helm 의존성 (Phase 5+에서 ArgoCD로 GitOps화 예정)
 
-### 면접 답변용 포인트
+### 말로 정리
 "외부 트래픽은 AWS Load Balancer Controller로 ALB를 동적 생성합니다.
 Controller에 AWS API 권한을 부여하기 위해 IRSA 대신 Pod Identity Association을 사용했고,
 이는 ADR-0015에서 박제한 결정의 첫 실전 적용입니다. IAM 정책 자체는 AWS 공식 GitHub의
