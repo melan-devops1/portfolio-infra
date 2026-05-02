@@ -10,6 +10,8 @@ resource "aws_iam_role" "ebs_csi" {
       Action = ["sts:AssumeRole", "sts:TagSession"]
     }]
   })
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "ebs_csi" {
@@ -29,4 +31,6 @@ resource "aws_eks_addon" "ebs_csi" {
   addon_name   = "aws-ebs-csi-driver"
   
   depends_on = [aws_eks_pod_identity_association.ebs_csi]
+
+  tags = var.tags
 }

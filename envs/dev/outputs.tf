@@ -91,6 +91,12 @@ output "alb_controller_helm_install_command" {
   EOT
 }
 
+# ===== EBS CSI =====
+output "ebs_csi_iam_role_arn" {
+  description = "EBS CSI Driver IAM Role ARN"
+  value       = module.ebs_csi_iam.iam_role_arn
+}
+
 # ===== Outputs (kubectl로 ConfigMap/Secret 생성용) =====
 output "rds_jdbc_url" {
   description = "RDS JDBC URL (Spring Boot용)"

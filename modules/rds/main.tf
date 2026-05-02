@@ -29,7 +29,7 @@ resource "random_password" "master" {
 # ─── 2. RDS Security Group ────────────────────────────────────
 resource "aws_security_group" "rds" {
   name_prefix = "${var.identifier}-rds-"
-  description = "RDS PostgreSQL — EKS 노드에서만 접근"
+  description = "RDS PostgreSQL access from EKS nodes only"
   vpc_id      = var.vpc_id
 
   ingress {

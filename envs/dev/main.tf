@@ -142,6 +142,26 @@ module "alb_controller_iam" {
 }
 
 ###############################################################################
+# EBS CSI Driver IAM — Phase 4 (함정 #44 박제)
+#
+# Pod Identity 기반 (ADR-0015 정합).
+# 직전 사이클까지는 매 destroy/apply 시 수동 IAM Role + association 생성.
+# Phase 4 진입 시점에 Terraform 모듈로 자동화.
+###############################################################################
+
+module "ebs_csi_iam" {
+  source = "../../modules/ebs-csi-iam"
+
+  cluster_name = module.eks.cluster_name
+
+  tags = {
+    Component = "storage"
+  }
+
+  depends_on = [module.eks]
+}
+
+###############################################################################
 # RDS PostgreSQL (Phase 4)
 ###############################################################################
 
