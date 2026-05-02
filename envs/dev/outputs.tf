@@ -90,3 +90,21 @@ output "alb_controller_helm_install_command" {
       --version 1.14.0
   EOT
 }
+
+# ===== Outputs (kubectl로 ConfigMap/Secret 생성용) =====
+output "rds_jdbc_url" {
+  description = "RDS JDBC URL (Spring Boot용)"
+  value       = module.rds.jdbc_url
+}
+
+output "rds_username" {
+  description = "RDS master username"
+  value       = module.rds.db_instance_username
+  sensitive   = true    # ⭐ 모듈이 sensitive로 박제 — 그대로 정합
+}
+
+output "rds_password" {
+  description = "RDS master password (kubectl create secret용)"
+  value       = module.rds.master_password
+  sensitive   = true
+}

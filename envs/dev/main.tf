@@ -140,3 +140,39 @@ module "alb_controller_iam" {
 
   depends_on = [module.eks]
 }
+
+###############################################################################
+# RDS PostgreSQL (Phase 4)
+###############################################################################
+
+module "rds" {
+  source = "../../modules/rds"
+
+  identifier = "${var.project_name}-${var.environment}-db"
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.intra_subnet_ids   # ⭐ 격리 자산용
+
+  # EKS 노드 SG에서만 5432 접근 허용
+  allowed_security_group_ids = [
+    module.eks.node_security_group_id
+  ]
+
+  # dev 설정 (PROJECT_CONTEXT 박제 — 비용 의식)
+  engine_version          = "15.17"
+  instance_class          = "db.t3.micro"
+  allocated_storage       = 20
+  max_allocated_storage   = 100
+  db_name                 = "portfoliodb"
+  master_username         = "portfolio_admin"
+  multi_az                = false
+  backup_retention_period = 1
+  deletion_protection     = false
+  skip_final_snapshot     = true
+
+  tags = {
+    Component = "database"
+  }
+
+  depends_on = [module.eks]   # ⭐ EKS 노드 SG 참조하니 순서 명시
+}
