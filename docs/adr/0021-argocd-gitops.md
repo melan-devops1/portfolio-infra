@@ -125,7 +125,7 @@ ignoreDifferences:
 - Self-heal로 운영 디버깅 시 sync 일시 중지 필요
 - Phase 5+에서 portfolio-manifests private 레포 전환 시 credential 등록 필요
 
-### 면접 답변용 포인트
+### 한마디로 정리
 "Phase 3 Epic 6에서 ArgoCD를 Helm으로 설치하고 GitOps 패턴을 도입했습니다.
 
 핵심 결정 4가지:
