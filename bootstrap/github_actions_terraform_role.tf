@@ -31,7 +31,8 @@ resource "aws_iam_role" "github_actions_terraform" {
       {
         Effect = "Allow"
         Principal = {
-          Federated = aws_iam_openid_connect_provider.github_actions.arn
+          # OIDC Provider는 다른 프로젝트가 이미 생성 → data source로 참조 (github_oidc.tf 참조)
+          Federated = data.aws_iam_openid_connect_provider.github_actions.arn
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {

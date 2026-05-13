@@ -21,8 +21,8 @@ output "aws_region" {
 ###############################################################################
 
 output "github_actions_oidc_provider_arn" {
-  description = "GitHub Actions OIDC Provider ARN"
-  value       = aws_iam_openid_connect_provider.github_actions.arn
+  description = "GitHub Actions OIDC Provider ARN (다른 프로젝트가 생성한 것을 data source로 참조)"
+  value       = data.aws_iam_openid_connect_provider.github_actions.arn
 }
 
 output "github_actions_terraform_role_arn" {

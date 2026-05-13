@@ -51,13 +51,21 @@ Epic 6은 마지막 두 단계 (manifest 갱신 + ArgoCD)를 도입.
 - 운영 책임 영역 분리 (앱 Ingress vs 운영 Ingress)
 
 ### 4) `--insecure` 플래그 (gotcha 방지)
-ArgoCD는 default로 HTTPS만 받음. ALB가 TLS termination + HTTP backend 패턴에서:
-- ArgoCD는 HTTP 요청을 HTTPS로 redirect 시도
-- ALB는 HTTP라 또 redirect → infinite loop
+ArgoCD default 동작:
+- HTTPS-only listen (자체 self-signed 또는 cert-manager TLS)
+- HTTP 요청이 들어오면 자동 HTTPS로 redirect
 
-해결: `server.extraArgs: [--insecure]` 박아 HTTP backend 동작 강제.
+현재 시연 단계라 ALB도 HTTP 80만 listen (ACM 인증서 미설치). 그 결과:
+- ALB가 HTTP로 backend(ArgoCD pod) 호출
+- ArgoCD가 HTTPS redirect 응답
+- ALB가 HTTP로 follow → 또 ArgoCD가 HTTPS redirect → 무한 loop
 
+해결: `server.extraArgs: [--insecure]` — ArgoCD가 HTTP로 listen + auto-redirect 비활성.
 이 사고는 검색 결과에서도 "the --insecure gotcha most tutorials miss"로 박제된 흔한 함정.
+
+Phase 5+에서 ALB에 ACM 인증서 + HTTPS listener를 추가하면 그때 ALB가 진짜 TLS termination을
+담당 (Internet ↔ ALB는 HTTPS, ALB ↔ ArgoCD는 HTTP). 그래도 `--insecure` 플래그는 유지 —
+ALB↔ArgoCD 구간은 여전히 HTTP니까.
 
 ### 5) Watch 대상: 단일 Application (apps/all/overlays/dev)
 선택지:
@@ -130,7 +138,7 @@ ignoreDifferences:
 
 핵심 결정 4가지:
 1. **별도 ALB**: 앱용과 ArgoCD용 ALB를 분리해 운영 책임 영역 명확화
-2. **--insecure 플래그**: ALB TLS termination 시점의 흔한 함정(redirect loop)을 미리 방지
+2. **--insecure 플래그**: ArgoCD default(HTTPS-only + HTTP→HTTPS redirect)로 발생하는 ALB↔ArgoCD redirect loop 함정 영구 회피 (시연 HTTP, Phase 5+ ACM 추가 시에도 ALB↔backend 구간은 HTTP라 유지)
 3. **Auto sync + Self-heal + Prune**: 진짜 GitOps 패턴 — kubectl 직접 변경도 자동 복구
 4. **ignoreDifferences로 deployment.replicas 제외**: HPA의 자동 스케일링과 ArgoCD self-heal이 무한 충돌하는 것 방지
 
